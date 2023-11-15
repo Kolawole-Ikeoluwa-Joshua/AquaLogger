@@ -7,10 +7,10 @@ services:
       context: .
     image: fluentd
     volumes:
-    - /var/lib/docker/containers:/fluentd/log/containers # Example: Reading docker logs
-    - ./file:/fluentd/log/files/ #Example: Reading logs from a file
-    - ./configurations:/fluentd/etc/
-    - ./logs:/output/ # Example: Fluentd will collect logs and store it here for demo
+      - /var/lib/docker/containers:/fluentd/log/containers # Example: Reading docker logs
+      - ./file:/fluentd/log/files/ #Example: Reading logs from a file
+      - ./configurations:/fluentd/etc/
+      - ./logs:/output/ # Example: Fluentd will collect logs and store it here for demo
     logging:
       driver: "local"
   # This app sends logs to Fluentd via HTTP
@@ -18,23 +18,28 @@ services:
     container_name: http-myapp
     image: alpine
     volumes:
-    - ./http:/app
-    command: [ /bin/sh , -c , "apk add --no-cache curl && chmod +x /app/app.sh && ./app/app.sh"]
+      - ./http:/app
+    command:
+      [
+        /bin/sh,
+        -c,
+        "apk add --no-cache curl && chmod +x /app/app.sh && ./app/app.sh",
+      ]
   # This app writes logs to a local file
   file-myapp:
     container_name: file-myapp
     image: alpine
     volumes:
-    - ./file:/app
-    command: [ /bin/sh , -c , "chmod +x /app/app.sh && ./app/app.sh"]
+      - ./file:/app
+    command: [/bin/sh, -c, "chmod +x /app/app.sh && ./app/app.sh"]
   elasticsearch: # port 9200
-    image: elasticsearch:7.9.1
+    image: elasticsearch:8.11.0
     container_name: elasticsearch
     environment:
-    - node.name=elasticsearch
-    - cluster.initial_master_nodes=elasticsearch
-    - bootstrap.memory_lock=true
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - node.name=elasticsearch
+      - cluster.initial_master_nodes=elasticsearch
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
