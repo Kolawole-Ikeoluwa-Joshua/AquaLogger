@@ -110,6 +110,79 @@ Start up elasticsearch and kibana services.
 docker-compose up -d elasticsearch kibana
 ```
 
+#### Verify logs with Kibana
+
 Access Kibana at: localhost:5601/app/home#/
 
-Create index patterns for `fluentd-*`
+Create a data view with this index pattern `fluentd-*`. Then filter data view for logs from `fluentd-file`.
+
+![Kibana-Data-View](./docs/kibana-data-view.png)
+
+## Troubleshooting
+
+1. Error with Elasticsearch container starting up:
+
+```
+Error:
+max virtual memory areas vm.max_map_count [65530]  is too low, increase to at least [262144]
+
+Fix:
+1) open powershell terminal and run:
+2) wsl -d docker-desktop
+3) sysctl -w vm.max_map_count=262144
+```
+
+2. Incompatible Container versions
+
+Visit dockerhub and do some research on the updated versions and their compatibility, then update your
+`docker-compose.yaml` file.
+
+3. Issues with Collecting logs over HTTP
+
+If the `http-myapp` refuses to start up, you can modify the docker-compose.yaml
+
+```
+# create a container that sets up curl and stays running
+
+http-myapp:
+  container_name: http-myapp
+  image: alpine:latest
+  command: sh -c "apk add --no-cache curl && tail -f /dev/null"
+  networks:
+    - logging-network
+```
+
+To access the shell of the running container and set up your script, you can use the following commands:
+
+i. Access container:
+
+```
+docker exec -it http-myapp /bin/sh
+```
+
+ii. create script:
+
+```
+cd /app
+
+rm ./http-app.sh
+
+vi ./http-app.sh, press i to insert
+
+copy paste http-app.sh content
+
+press esc & :wq to save and exit
+
+chmod +x /app/http-app.sh
+
+execute script: ./http-app.sh
+```
+
+iii. You should see the following output:
+
+```
+/app # ./http-app.sh
+Sending logs to FluentD
+Sending logs to FluentD
+Sending logs to FluentD
+```

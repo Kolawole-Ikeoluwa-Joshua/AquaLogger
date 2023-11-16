@@ -1,7 +1,4 @@
 #!/bin/sh
-
-# this simulates an application with fluentd library installed
-# which sends logs over to fluentd
 while true
 do
 	echo "Sending logs to FluentD"
