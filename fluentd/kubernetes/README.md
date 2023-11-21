@@ -81,7 +81,6 @@ To view container logs in `/var/log/containers/`:
 
 ```
 kubectl -n fluentd exec -it <fluentd-container-id> bash
-kubectl -n fluentd exec -it elasticsearch-854bcf66f5-2r2n4 bash
 ```
 
 ## Demo ElasticSearch and Kibana
