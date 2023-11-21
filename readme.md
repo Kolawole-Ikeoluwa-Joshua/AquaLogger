@@ -15,3 +15,7 @@
 - Demos
 
 [Fluentd](./fluentd/introduction/readme.md)
+
+## Fluentd in Kubernertes
+
+[Fluentd in K8s](./fluentd/kubernetes/README.md)
